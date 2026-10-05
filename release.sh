@@ -3232,7 +3232,7 @@ upload_github() {
 		return 0
 	fi
 
-	local _gh_metadata _gh_previous_metadata _gh_payload _gh_release_url _gh_method
+	local _gh_metadata _gh_previous_metadata _gh_payload _gh_release_url _gh_method _gh_body
 	local release_id versionfile resultfile result flavor title
 	local return_code=0
 
@@ -3266,11 +3266,21 @@ upload_github() {
 	versionfile="$releasedir/release.json"
 	jq -c '.' <<< "$_gh_metadata" > "$versionfile" || echo "There was an error creating release.json" >&2
 
+	# GitHub rejects release bodies over 125000 characters, so fall back to the
+	# first changelog section (up to the next line starting with the same word as
+	# the first line, e.g. "Version"), truncated if it is still too long
+	_gh_body=$( jq --slurp --raw-input '.' < "$changelog_path" )
+	if (( ${#_gh_body} > 125000 )); then
+		echo "Changelog is too long for a GitHub release, using the first section only"
+		_gh_body=$( awk 'NR == 1 { header = $1 } NR > 1 && $1 == header { exit } !/^-+[ \t\r]*$/ { print }' "$changelog_path" \
+			| jq --slurp --raw-input 'if length > 125000 then .[:124900] + "\n\n(changelog truncated)" else . end' )
+	fi
+
 	_gh_payload=$( cat <<-EOF
 	{
 	  "tag_name": "$tag",
 	  "name": "$tag",
-	  "body": $( jq --slurp --raw-input '.' < "$changelog_path" ),
+	  "body": $_gh_body,
 	  "draft": false,
 	  "prerelease": $( [[ "$file_type" != "release" ]] && echo true || echo false )
 	}
