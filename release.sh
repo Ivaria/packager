@@ -76,7 +76,7 @@ if [[ ${BASH_VERSINFO[0]} -lt 4 ]] || [[ ${BASH_VERSINFO[0]} -eq 4 && ${BASH_VER
 fi
 
 # Game versions for uploading
-declare -A game_flavor=( ["retail"]="retail" ["classic"]="classic" ["bcc"]="bcc" ["mainline"]="retail" ["tbc"]="bcc" ["vanilla"]="classic" ["wrath"]="wrath" ["wotlkc"]="wrath" ["cata"]="cata" ["mists"]="mists" ["titan"]="titan" ["forever"]="forever" ["camelot"]="forever" )
+declare -A game_flavor=( ["retail"]="retail" ["classic"]="classic" ["bcc"]="bcc" ["mainline"]="retail" ["tbc"]="bcc" ["vanilla"]="classic" ["wrath"]="wrath" ["wotlkc"]="wrath" ["cata"]="cata" ["mists"]="mists" ["titan"]="titan" ["forever"]="forever" ["camelot"]="forever" ["tbcc"]="bcc" ["catac"]="cata" ["mopc"]="mists" )
 
 declare -A game_type_version=()           # type -> version (: delim)
 declare -A game_type_interface=()         # type -> toc (: delim)
