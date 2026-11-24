@@ -3436,8 +3436,8 @@ if [[ -z $skip_upload && -n $archive && -s $archive ]]; then
 			echo "Uploading to CurseForge failed, aborting uploads." >&2
 			exit 1
 		fi
-		upload_wowinterface || exit_code=1
-		upload_wago || exit_code=1
+		retry upload_wowinterface || exit_code=1
+		retry upload_wago || exit_code=1
 		upload_github || exit_code=1
 	fi
 fi
